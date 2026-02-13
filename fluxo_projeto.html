@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>87LifeInFit - Fluxo Completo do Projeto</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --info: #74b9ff;
+            --purple: #a29bfe;
+            --orange: #e17055;
+            --teal: #00cec9;
+            --bg: #0a0a1a;
+            --card-bg: #1a1a2e;
+            --text: #e0e0e0;
+            --text-muted: #8a8a9a;
+            --border: #2a2a4a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, #1a0a3e 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(233,69,96,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(116,185,255,0.1) 0%, transparent 50%);
+        }
+        .header h1 {
+            font-size: 2.5em;
+            color: #fff;
+            position: relative;
+            text-shadow: 0 0 30px rgba(233,69,96,0.3);
+        }
+        .header h1 span { color: var(--highlight); }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1em;
+            margin-top: 10px;
+            position: relative;
+        }
+        .header .badges {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        .badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .badge-python { background: rgba(55,118,171,0.3); color: #74b9ff; border: 1px solid #3776ab; }
+        .badge-flask { background: rgba(0,0,0,0.3); color: #ddd; border: 1px solid #555; }
+        .badge-sql { background: rgba(204,0,0,0.2); color: #ff7675; border: 1px solid #cc0000; }
+        .badge-jenkins { background: rgba(209,78,68,0.2); color: #e17055; border: 1px solid #d14e44; }
+        .badge-powerbi { background: rgba(242,200,15,0.2); color: #fdcb6e; border: 1px solid #f2c80f; }
+
+        /* Navigation */
+        .nav {
+            background: var(--secondary);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .nav-inner {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 14px 20px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            display: inline-block;
+        }
+        .nav a:hover, .nav a.active {
+            color: var(--highlight);
+            border-bottom-color: var(--highlight);
+            background: rgba(233,69,96,0.05);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Section */
+        .section {
+            margin: 40px 0;
+        }
+        .section-title {
+            font-size: 1.8em;
+            color: #fff;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        .card-title {
+            font-size: 1.2em;
+            color: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-label {
+            font-size: 0.7em;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        /* Grid */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+
+        @media (max-width: 1024px) {
+            .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        /* Stats */
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--highlight), var(--info));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85em;
+            margin-top: 4px;
+        }
+
+        /* Flow diagram */
+        .flow-container {
+            position: relative;
+            padding: 20px 0;
+        }
+        .flow-stage {
+            display: flex;
+            align-items: stretch;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .flow-stage::after {
+            content: '';
+            position: absolute;
+            left: 30px;
+            bottom: -30px;
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(to bottom, var(--highlight), transparent);
+        }
+        .flow-stage:last-child::after { display: none; }
+
+        .flow-number {
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 20px;
+            z-index: 1;
+        }
+        .flow-content {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .flow-content h3 {
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 1.15em;
+        }
+        .flow-content p {
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        /* Pipeline visual */
+        .pipeline-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .pipeline-step {
+            background: var(--card-bg);
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 160px;
+            position: relative;
+        }
+        .pipeline-step h4 {
+            font-size: 0.95em;
+            margin-bottom: 4px;
+        }
+        .pipeline-step p {
+            font-size: 0.75em;
+            color: var(--text-muted);
+        }
+        .pipeline-arrow {
+            font-size: 1.8em;
+            color: var(--text-muted);
+            margin: 0 8px;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: var(--accent);
+            color: #fff;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9em;
+        }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        tr:last-child td { border-bottom: none; }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.78em;
+            font-weight: 600;
+        }
+        .tag-staging { background: rgba(116,185,255,0.15); color: var(--info); }
+        .tag-dimension { background: rgba(162,155,254,0.15); color: var(--purple); }
+        .tag-fact { background: rgba(0,184,148,0.15); color: var(--success); }
+        .tag-realtime { background: rgba(233,69,96,0.15); color: var(--highlight); }
+        .tag-batch { background: rgba(225,112,85,0.15); color: var(--orange); }
+        .tag-critical { background: rgba(233,69,96,0.2); color: var(--highlight); border: 1px solid rgba(233,69,96,0.3); }
+        .tag-high { background: rgba(225,112,85,0.15); color: var(--orange); }
+        .tag-medium { background: rgba(253,203,110,0.15); color: var(--warning); }
+        .tag-low { background: rgba(0,184,148,0.15); color: var(--success); }
+
+        /* Code blocks */
+        .code-block {
+            background: #0d0d1a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.5;
+        }
+        .code-comment { color: #6a6a8a; }
+        .code-keyword { color: var(--highlight); }
+        .code-string { color: var(--success); }
+        .code-func { color: var(--info); }
+
+        /* Diagram boxes */
+        .diagram {
+            background: #0d0d1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        .diagram-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        .diagram-box {
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 12px 20px;
+            text-align: center;
+            min-width: 140px;
+            font-size: 0.85em;
+            position: relative;
+        }
+        .diagram-box.source { border-color: var(--info); background: rgba(116,185,255,0.08); }
+        .diagram-box.process { border-color: var(--warning); background: rgba(253,203,110,0.08); }
+        .diagram-box.storage { border-color: var(--success); background: rgba(0,184,148,0.08); }
+        .diagram-box.output { border-color: var(--purple); background: rgba(162,155,254,0.08); }
+        .diagram-box.alert { border-color: var(--highlight); background: rgba(233,69,96,0.08); }
+        .diagram-box strong { display: block; margin-bottom: 4px; color: #fff; }
+        .diagram-box small { color: var(--text-muted); font-size: 0.85em; }
+        .diagram-arrow {
+            font-size: 1.5em;
+            color: var(--text-muted);
+        }
+        .diagram-arrow-down {
+            text-align: center;
+            font-size: 1.5em;
+            color: var(--text-muted);
+            margin: 8px 0;
+        }
+        .diagram-label {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8em;
+            margin: 4px 0;
+            font-style: italic;
+        }
+        .diagram-group {
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 10px 0;
+        }
+        .diagram-group-title {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        /* Endpoint cards */
+        .endpoint {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .method {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8em;
+            min-width: 60px;
+            text-align: center;
+        }
+        .method-post { background: rgba(0,184,148,0.2); color: var(--success); }
+        .method-get { background: rgba(116,185,255,0.2); color: var(--info); }
+        .endpoint-path {
+            font-family: 'Cascadia Code', monospace;
+            color: #fff;
+            font-size: 0.95em;
+        }
+        .endpoint-desc {
+            color: var(--text-muted);
+            font-size: 0.85em;
+            margin-left: auto;
+        }
+        .endpoint-table {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        /* Business rules */
+        .rule-list { list-style: none; padding: 0; }
+        .rule-list li {
+            padding: 10px 16px;
+            border-left: 3px solid var(--accent);
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9em;
+        }
+        .rule-list li:hover {
+            border-left-color: var(--highlight);
+            background: rgba(233,69,96,0.03);
+        }
+        .rule-number {
+            color: var(--highlight);
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        /* File tree */
+        .file-tree {
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.85em;
+            line-height: 1.8;
+            background: #0d0d1a;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+        }
+        .file-tree .folder { color: var(--info); }
+        .file-tree .file { color: var(--text-muted); }
+        .file-tree .critical { color: var(--highlight); font-weight: 600; }
+        .file-tree .comment { color: #4a4a6a; font-style: italic; }
+
+        /* Collapsible */
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+        .collapsible::before {
+            content: '+ ';
+            color: var(--highlight);
+            font-weight: bold;
+        }
+        .collapsible.active::before {
+            content: '- ';
+        }
+        .collapsible-content {
+            display: none;
+            padding: 16px;
+            margin-top: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        .collapsible-content.show { display: block; }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+        }
+
+        /* Scroll indicator */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--highlight);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(233,69,96,0.4);
+            z-index: 99;
+            transition: transform 0.2s;
+        }
+        .scroll-top:hover { transform: scale(1.1); }
+        .scroll-top.visible { display: flex; }
+
+        /* Connector lines */
+        .connector {
+            width: 2px;
+            height: 30px;
+            margin: 0 auto;
+        }
+
+        /* Info box */
+        .info-box {
+            background: rgba(116,185,255,0.08);
+            border: 1px solid rgba(116,185,255,0.2);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 0.9em;
+        }
+        .info-box.warning {
+            background: rgba(253,203,110,0.08);
+            border-color: rgba(253,203,110,0.2);
+        }
+        .info-box.danger {
+            background: rgba(233,69,96,0.08);
+            border-color: rgba(233,69,96,0.2);
+        }
+        .info-box strong { color: #fff; }
+
+        /* Tooltip */
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+        [data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .dual-mode {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        @media (max-width: 768px) {
+            .dual-mode { grid-template-columns: 1fr; }
+        }
+        .mode-card {
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .mode-card.realtime {
+            background: linear-gradient(135deg, rgba(233,69,96,0.08), rgba(233,69,96,0.02));
+            border: 1px solid rgba(233,69,96,0.2);
+        }
+        .mode-card.batch {
+            background: linear-gradient(135deg, rgba(225,112,85,0.08), rgba(225,112,85,0.02));
+            border: 1px solid rgba(225,112,85,0.2);
+        }
+        .mode-card h3 {
+            color: #fff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mode-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .mode-step-num {
+            min-width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: 700;
+            color: #fff;
+        }
+        .mode-step-text {
+            font-size: 0.88em;
+            color: var(--text);
+            padding-top: 3px;
+        }
+        .mode-step-text small {
+            display: block;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .tab-btn {
+            padding: 10px 24px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9em;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-btn:hover { color: var(--text); }
+        .tab-btn.active {
+            color: var(--highlight);
+            border-bottom-color: var(--highlight);
+        }
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        .tab-content.active { display: block; }
+
+        /* Animate */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .highlight-text { color: var(--highlight); font-weight: 600; }
+        .success-text { color: var(--success); }
+        .info-text { color: var(--info); }
+        .warning-text { color: var(--warning); }
+        .purple-text { color: var(--purple); }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>87<span>LifeInFit</span></h1>
+        <p>Pipeline ETL &bull; Data Warehouse &bull; Webhook API</p>
+        <div class="badges">
+            <span class="badge badge-python">Python 3.13</span>
+            <span class="badge badge-flask">Flask API</span>
+            <span class="badge badge-sql">SQL Server</span>
+            <span class="badge badge-jenkins">Jenkins CI/CD</span>
+            <span class="badge badge-powerbi">Power BI</span>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav">
+        <div class="nav-inner">
+            <a href="#overview">Visao Geral</a>
+            <a href="#architecture">Arquitetura</a>
+            <a href="#structure">Estrutura</a>
+            <a href="#pipeline">Pipeline ETL</a>
+            <a href="#realtime">Tempo Real</a>
+            <a href="#api">API Endpoints</a>
+            <a href="#dataflow">Fluxo de Dados</a>
+            <a href="#database">Banco de Dados</a>
+            <a href="#business">Regras de Negocio</a>
+            <a href="#integrations">Integracoes</a>
+            <a href="#deploy">Deploy</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- ===================== OVERVIEW ===================== -->
+        <section class="section fade-in" id="overview">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(233,69,96,0.15);">&#9733;</div>
+                Visao Geral
+            </div>
+            <p class="section-subtitle">Pipeline ETL completo para processamento de vendas, renovacoes e metas das empresas Life in Fit e Class Fit</p>
+
+            <div class="grid-4">
+                <div class="stat-card">
+                    <div class="stat-value">6+</div>
+                    <div class="stat-label">Fontes de Dados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Estagios do Pipeline</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">7+</div>
+                    <div class="stat-label">Tabelas Fato</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Modos de Operacao</div>
+                </div>
+            </div>
+
+            <div class="dual-mode">
+                <div class="mode-card realtime">
+                    <h3><span style="font-size:1.2em;">&#9889;</span> Modo Tempo Real</h3>
+                    <p style="color:var(--text-muted); font-size:0.88em;">
+                        API Flask recebe webhooks do Guru e Hubla em tempo real. Cada evento de venda ou pagamento
+                        e processado de forma assincrona (thread em background) e inserido diretamente nas tabelas
+                        de staging/fato do SQL Server.
+                    </p>
+                    <div style="margin-top:14px;">
+                        <span class="tag tag-realtime">Webhook</span>
+                        <span class="tag tag-realtime">Async</span>
+                        <span class="tag tag-realtime">Flask + Gunicorn</span>
+                    </div>
+                </div>
+                <div class="mode-card batch">
+                    <h3><span style="font-size:1.2em;">&#9881;</span> Modo Batch (ETL)</h3>
+                    <p style="color:var(--text-muted); font-size:0.88em;">
+                        Pipeline Jenkins orquestra execucao agendada de scripts Python em 4 estagios:
+                        Extracao &rarr; Dimensoes &rarr; Fatos &rarr; Atualizacao. Scripts rodam em paralelo
+                        com logica de retry (5 tentativas).
+                    </p>
+                    <div style="margin-top:14px;">
+                        <span class="tag tag-batch">Jenkins</span>
+                        <span class="tag tag-batch">Agendado</span>
+                        <span class="tag tag-batch">Paralelo</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== ARCHITECTURE ===================== -->
+        <section class="section fade-in" id="architecture">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(116,185,255,0.15);">&#9878;</div>
+                Arquitetura Geral
+            </div>
+            <p class="section-subtitle">Modelo Dimensional (Data Warehouse) com camadas de Staging, Dimensoes e Fatos</p>
+
+            <div class="diagram">
+                <!-- Sources -->
+                <div class="diagram-group-title">FONTES DE DADOS EXTERNAS</div>
+                <div class="diagram-row">
+                    <div class="diagram-box source">
+                        <strong>Guru API</strong>
+                        <small>Transacoes LF/CF</small>
+                    </div>
+                    <div class="diagram-box source">
+                        <strong>Hubla Webhooks</strong>
+                        <small>Faturas e Pagamentos</small>
+                    </div>
+                    <div class="diagram-box source">
+                        <strong>Hubla Excel</strong>
+                        <small>Vendas e Assinaturas</small>
+                    </div>
+                    <div class="diagram-box source">
+                        <strong>Google Sheets</strong>
+                        <small>Metas Mensais</small>
+                    </div>
+                </div>
+
+                <div class="diagram-arrow-down">&#8595; &#8595; &#8595; &#8595;</div>
+                <div class="diagram-label">Extracao (API / Webhook / Import)</div>
+
+                <!-- Staging -->
+                <div class="diagram-group">
+                    <div class="diagram-group-title">CAMADA STAGING (Dados Brutos)</div>
+                    <div class="diagram-row">
+                        <div class="diagram-box storage">
+                            <strong>stgGuruTransactions</strong>
+                            <small>LF + CF</small>
+                        </div>
+                        <div class="diagram-box storage">
+                            <strong>stgHublaVendas</strong>
+                            <small>LF + CF</small>
+                        </div>
+                        <div class="diagram-box storage">
+                            <strong>stgHublaFatura</strong>
+                            <small>LF + CF</small>
+                        </div>
+                        <div class="diagram-box storage">
+                            <strong>stgHublaAssinaturas</strong>
+                            <small>Assinaturas</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diagram-arrow-down">&#8595; &#8595; &#8595;</div>
+                <div class="diagram-label">Transformacao (ETL Pipeline)</div>
+
+                <!-- Dimensions -->
+                <div class="diagram-group">
+                    <div class="diagram-group-title">CAMADA DIMENSOES (Dados de Referencia)</div>
+                    <div class="diagram-row">
+                        <div class="diagram-box process">
+                            <strong>dAuxiliar</strong>
+                            <small>UTM &rarr; Embaixador</small>
+                        </div>
+                        <div class="diagram-arrow">&#8594;</div>
+                        <div class="diagram-box process">
+                            <strong>dEmbaixador</strong>
+                            <small>Vendedores</small>
+                        </div>
+                        <div class="diagram-box process">
+                            <strong>dProduto</strong>
+                            <small>Catalogo</small>
+                        </div>
+                        <div class="diagram-box process">
+                            <strong>dStatus</strong>
+                            <small>Status Padronizado</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diagram-arrow-down">&#8595; &#8595; &#8595;</div>
+                <div class="diagram-label">Carga (Merge + Insert)</div>
+
+                <!-- Facts -->
+                <div class="diagram-group">
+                    <div class="diagram-group-title">CAMADA FATOS (Eventos de Negocio)</div>
+                    <div class="diagram-row">
+                        <div class="diagram-box alert">
+                            <strong>fVendas</strong>
+                            <small>Vendas (Ciclo 1)</small>
+                        </div>
+                        <div class="diagram-box alert">
+                            <strong>fRenovacoes</strong>
+                            <small>Renovacoes (Ciclo &gt;1)</small>
+                        </div>
+                        <div class="diagram-box alert">
+                            <strong>fMetas*</strong>
+                            <small>Metas &amp; Objetivos</small>
+                        </div>
+                        <div class="diagram-box alert">
+                            <strong>fVendasRT</strong>
+                            <small>Vendas Tempo Real</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diagram-arrow-down">&#8595;</div>
+                <div class="diagram-label">Consumo</div>
+
+                <!-- Output -->
+                <div class="diagram-row">
+                    <div class="diagram-box output">
+                        <strong>Power BI</strong>
+                        <small>Dashboards &amp; Relatorios</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== STRUCTURE ===================== -->
+        <section class="section fade-in" id="structure">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(0,184,148,0.15);">&#128193;</div>
+                Estrutura do Projeto
+            </div>
+            <p class="section-subtitle">Organizacao de diretorios e arquivos principais</p>
+
+            <div class="file-tree">
+<span class="folder">87LifeInFit/</span>
+<span class="folder">  Pipeline/</span>                           <span class="comment"># ETL Pipeline Scripts</span>
+<span class="folder">    01.stages/</span>                        <span class="comment"># Camada de Extracao</span>
+<span class="folder">      01.DigitalManagerGuru/</span>
+<span class="file">        transactionsCF.py</span>              <span class="comment"># Extracao transacoes Class Fit via Guru API</span>
+<span class="file">        transactionsLF.py</span>              <span class="comment"># Extracao transacoes Life in Fit via Guru API</span>
+<span class="file">        atualizarWH.py</span>                 <span class="comment"># Atualizacao dados warehouse</span>
+<span class="file">        limpezaWH.py</span>                   <span class="comment"># Limpeza de dados antigos</span>
+<span class="folder">      02.Hubla/</span>
+<span class="file">        vendasCF.py</span>                    <span class="comment"># Importacao vendas CF via Excel</span>
+<span class="file">        vendasLF.py</span>                    <span class="comment"># Importacao vendas LF via Excel</span>
+<span class="file">        assinaturas.py</span>                 <span class="comment"># Importacao assinaturas via Excel</span>
+<span class="folder">    02.dimensoes/</span>                     <span class="comment"># Camada de Dimensoes</span>
+<span class="critical">      auxiliar.py</span>                    <span class="comment"># CRITICO: UTM &rarr; Embaixador (EXECUTAR PRIMEIRO)</span>
+<span class="file">      embaixador.py</span>                  <span class="comment"># Dimensao Embaixadores/Vendedores</span>
+<span class="file">      produto.py</span>                     <span class="comment"># Dimensao Produtos</span>
+<span class="file">      status.py</span>                      <span class="comment"># Dimensao Status das Transacoes</span>
+<span class="folder">    03.fatos/</span>                         <span class="comment"># Camada de Fatos</span>
+<span class="critical">      vendas.py</span>                      <span class="comment"># Fato de Vendas (Ciclo 1)</span>
+<span class="critical">      renovacoes.py</span>                 <span class="comment"># Fato de Renovacoes (Ciclo &gt;1)</span>
+<span class="file">      metas.py</span>                       <span class="comment"># Metas via Google Sheets</span>
+<span class="file">      metasCF.py</span>                     <span class="comment"># Metas Class Fit</span>
+<span class="file">      metasExpertsCF.py</span>              <span class="comment"># Metas Experts Class Fit</span>
+<span class="folder">    04.atualizacao/</span>                   <span class="comment"># Atualizacao Sistemas Externos</span>
+<span class="file">      powerbi.py</span>                     <span class="comment"># Refresh datasets Power BI</span>
+<span class="folder">  docs/</span>                                <span class="comment"># Documentacao</span>
+<span class="critical">  main.py</span>                              <span class="comment"># Flask API (Webhooks)</span>
+<span class="critical">  utils.py</span>                             <span class="comment"># Funcoes de transformacao</span>
+<span class="file">  logger_config.py</span>                    <span class="comment"># Configuracao de logging</span>
+<span class="file">  alertaFalha.py</span>                      <span class="comment"># Alertas de falha via Power Automate</span>
+<span class="file">  Jenkinsfile</span>                          <span class="comment"># Pipeline CI/CD</span>
+<span class="file">  Dockerfile</span>                           <span class="comment"># Imagem Docker (Heroku/Cloud)</span>
+<span class="file">  requirements.txt</span>                    <span class="comment"># Dependencias Python</span>
+<span class="file">  environment.yml</span>                     <span class="comment"># Ambiente Conda</span>
+            </div>
+        </section>
+
+        <!-- ===================== PIPELINE ETL ===================== -->
+        <section class="section fade-in" id="pipeline">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(225,112,85,0.15);">&#9881;</div>
+                Pipeline ETL (Batch)
+            </div>
+            <p class="section-subtitle">Execucao via Jenkins em 4 estagios sequenciais com paralelismo interno</p>
+
+            <!-- Pipeline visual -->
+            <div class="pipeline-visual">
+                <div class="pipeline-step" style="border-color: var(--info);">
+                    <h4 style="color: var(--info);">01. Stages</h4>
+                    <p>Extracao</p>
+                </div>
+                <div class="pipeline-arrow">&#10132;</div>
+                <div class="pipeline-step" style="border-color: var(--warning);">
+                    <h4 style="color: var(--warning);">02. Dimensoes</h4>
+                    <p>Transformacao</p>
+                </div>
+                <div class="pipeline-arrow">&#10132;</div>
+                <div class="pipeline-step" style="border-color: var(--success);">
+                    <h4 style="color: var(--success);">03. Fatos</h4>
+                    <p>Carga</p>
+                </div>
+                <div class="pipeline-arrow">&#10132;</div>
+                <div class="pipeline-step" style="border-color: var(--purple);">
+                    <h4 style="color: var(--purple);">04. Atualizacao</h4>
+                    <p>Refresh</p>
+                </div>
+            </div>
+
+            <!-- Stage details -->
+            <div class="flow-container">
+
+                <!-- Stage 1 -->
+                <div class="flow-stage">
+                    <div class="flow-number" style="background: linear-gradient(135deg, var(--info), #0984e3);">1</div>
+                    <div class="flow-content">
+                        <h3 style="color: var(--info);">Stages - Extracao de Dados <span class="tag tag-batch">Paralelo</span></h3>
+                        <p>Extrai dados brutos de fontes externas e armazena em tabelas de staging.</p>
+                        <div style="margin-top:16px;">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr><th>Script</th><th>Fonte</th><th>Destino</th><th>Metodo</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>transactionsLF.py</td>
+                                            <td>Guru API (Life in Fit)</td>
+                                            <td><span class="tag tag-staging">stgGuruTransactionsLF</span></td>
+                                            <td>API REST</td>
+                                        </tr>
+                                        <tr>
+                                            <td>transactionsCF.py</td>
+                                            <td>Guru API (Class Fit)</td>
+                                            <td><span class="tag tag-staging">stgGuruTransactionsCF</span></td>
+                                            <td>API REST</td>
+                                        </tr>
+                                        <tr>
+                                            <td>vendasCF.py</td>
+                                            <td>Hubla (Class Fit)</td>
+                                            <td><span class="tag tag-staging">stgHublaVendas</span></td>
+                                            <td>Excel Import</td>
+                                        </tr>
+                                        <tr>
+                                            <td>vendasLF.py</td>
+                                            <td>Hubla (Life in Fit)</td>
+                                            <td><span class="tag tag-staging">stgHublaVendasLF</span></td>
+                                            <td>Excel Import</td>
+                                        </tr>
+                                        <tr>
+                                            <td>assinaturas.py</td>
+                                            <td>Hubla</td>
+                                            <td><span class="tag tag-staging">stgHublaAssinaturas</span></td>
+                                            <td>Excel Import</td>
+                                        </tr>
+                                        <tr>
+                                            <td>atualizarWH.py</td>
+                                            <td>Warehouse</td>
+                                            <td>Atualizacao incremental</td>
+                                            <td>SQL</td>
+                                        </tr>
+                                        <tr>
+                                            <td>limpezaWH.py</td>
+                                            <td>Warehouse</td>
+                                            <td>Remocao dados antigos</td>
+                                            <td>SQL</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 2 -->
+                <div class="flow-stage">
+                    <div class="flow-number" style="background: linear-gradient(135deg, var(--warning), #e17055);">2</div>
+                    <div class="flow-content">
+                        <h3 style="color: var(--warning);">Dimensoes - Transformacao <span class="tag tag-critical">Ordem Critica</span></h3>
+                        <p>Processa dimensoes do Data Warehouse. <strong>auxiliar.py DEVE rodar PRIMEIRO</strong>, seguido pelas demais em paralelo.</p>
+                        <div class="info-box danger" style="margin-top: 14px;">
+                            <strong>ATENCAO:</strong> O script <strong>auxiliar.py</strong> e obrigatorio antes de qualquer outra dimensao,
+                            pois mapeia parametros UTM para IDs de embaixadores. Sem ele, as dimensoes e fatos nao conseguem
+                            atribuir vendas aos vendedores corretos.
+                        </div>
+                        <div style="margin-top:16px;">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr><th>Script</th><th>Execucao</th><th>Entrada</th><th>Saida</th><th>Funcao</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background:rgba(233,69,96,0.05);">
+                                            <td><strong style="color:var(--highlight);">auxiliar.py</strong></td>
+                                            <td><span class="tag tag-critical">1o - Sequencial</span></td>
+                                            <td>Todas stg*</td>
+                                            <td><span class="tag tag-dimension">dAuxiliar</span></td>
+                                            <td>Mapeamento UTM &rarr; Embaixador (11 regras)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>embaixador.py</td>
+                                            <td><span class="tag tag-batch">2o - Paralelo</span></td>
+                                            <td>dAuxiliar</td>
+                                            <td><span class="tag tag-dimension">dEmbaixador</span></td>
+                                            <td>Perfis dos embaixadores/vendedores</td>
+                                        </tr>
+                                        <tr>
+                                            <td>produto.py</td>
+                                            <td><span class="tag tag-batch">2o - Paralelo</span></td>
+                                            <td>Todas stg* + GSheets</td>
+                                            <td><span class="tag tag-dimension">dProduto</span></td>
+                                            <td>Catalogo de produtos</td>
+                                        </tr>
+                                        <tr>
+                                            <td>status.py</td>
+                                            <td><span class="tag tag-batch">2o - Paralelo</span></td>
+                                            <td>Todas stg*</td>
+                                            <td><span class="tag tag-dimension">dStatus</span></td>
+                                            <td>Padronizacao de status</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 3 -->
+                <div class="flow-stage">
+                    <div class="flow-number" style="background: linear-gradient(135deg, var(--success), #00b894);">3</div>
+                    <div class="flow-content">
+                        <h3 style="color: var(--success);">Fatos - Carga de Dados <span class="tag tag-batch">Paralelo</span></h3>
+                        <p>Constroi tabelas fato do Data Warehouse com merge de staging + dimensoes.</p>
+                        <div style="margin-top:16px;">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr><th>Script</th><th>Saida</th><th>Filtro Principal</th><th>Fontes</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>vendas.py</strong></td>
+                                            <td><span class="tag tag-fact">fVendas</span></td>
+                                            <td>Ciclo = 1, Status Aprovado/Reembolsado</td>
+                                            <td>stgGuru* + stgHubla* + dAuxiliar + dProduto + dStatus</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>renovacoes.py</strong></td>
+                                            <td><span class="tag tag-fact">fRenovacoes</span></td>
+                                            <td>Ciclo &gt;1 OU utm_medium = Renovacao/Upsell</td>
+                                            <td>stgGuru* + stgHubla* + dAuxiliar + dProduto + dStatus</td>
+                                        </tr>
+                                        <tr>
+                                            <td>metas.py</td>
+                                            <td><span class="tag tag-fact">fMetasGsheets</span></td>
+                                            <td>Metas mensais por vendedor</td>
+                                            <td>Google Sheets + Lista funcionarios</td>
+                                        </tr>
+                                        <tr>
+                                            <td>metasCF.py</td>
+                                            <td><span class="tag tag-fact">fMetasCF</span></td>
+                                            <td>Metas Class Fit</td>
+                                            <td>Google Sheets</td>
+                                        </tr>
+                                        <tr>
+                                            <td>metasExpertsCF.py</td>
+                                            <td><span class="tag tag-fact">fMetasExpertsCF</span></td>
+                                            <td>Metas Experts CF</td>
+                                            <td>Google Sheets</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 4 -->
+                <div class="flow-stage">
+                    <div class="flow-number" style="background: linear-gradient(135deg, var(--purple), #6c5ce7);">4</div>
+                    <div class="flow-content">
+                        <h3 style="color: var(--purple);">Atualizacao - Sistemas Externos</h3>
+                        <p>Atualiza dashboards e envia alertas apos conclusao do pipeline.</p>
+                        <div style="margin-top:16px;">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr><th>Script</th><th>Acao</th><th>Destino</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>powerbi.py</td>
+                                            <td>Refresh de datasets</td>
+                                            <td>Power BI (via API)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>alertaFalha.py</td>
+                                            <td>Notificacao de falha (se erro)</td>
+                                            <td>Power Automate (Webhook)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="info-box">
+                <strong>Retry Logic:</strong> Cada script possui ate <strong>5 tentativas</strong> com intervalo de <strong>5 segundos</strong>
+                entre elas. Em caso de falha total, o <code>alertaFalha.py</code> envia notificacao via Power Automate.
+            </div>
+        </section>
+
+        <!-- ===================== REAL-TIME ===================== -->
+        <section class="section fade-in" id="realtime">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(233,69,96,0.15);">&#9889;</div>
+                Processamento em Tempo Real
+            </div>
+            <p class="section-subtitle">API Flask recebe webhooks e processa dados de forma assincrona</p>
+
+            <div class="diagram">
+                <div class="diagram-row">
+                    <div class="diagram-box source">
+                        <strong>Cliente compra</strong>
+                        <small>Guru / Hubla</small>
+                    </div>
+                </div>
+                <div class="diagram-arrow-down">&#8595;</div>
+                <div class="diagram-label">Webhook HTTP POST</div>
+
+                <div class="diagram-row">
+                    <div class="diagram-box process" style="border-color: var(--highlight);">
+                        <strong>Flask API</strong>
+                        <small>main.py</small>
+                    </div>
+                </div>
+                <div class="diagram-arrow-down">&#8595;</div>
+                <div class="diagram-label">request.get_json()</div>
+
+                <div class="diagram-row">
+                    <div class="diagram-box process">
+                        <strong>Transformacao</strong>
+                        <small>utils.py</small>
+                    </div>
+                </div>
+
+                <div class="diagram-row" style="margin-top:8px;">
+                    <div style="text-align:center; font-size:0.8em; color:var(--text-muted); max-width:400px;">
+                        <div style="background:rgba(253,203,110,0.08); border:1px solid rgba(253,203,110,0.15); border-radius:8px; padding:10px; text-align:left;">
+                            &#8226; Validar campos obrigatorios<br>
+                            &#8226; Extrair JSON aninhado<br>
+                            &#8226; Normalizar UTM (lowercase, trim)<br>
+                            &#8226; Converter timezone (UTC &rarr; Sao Paulo)<br>
+                            &#8226; Consultar dAuxiliar &rarr; idEmbaixador<br>
+                            &#8226; Calcular valores derivados
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diagram-arrow-down">&#8595;</div>
+                <div class="diagram-label">Background Thread (Async)</div>
+
+                <div class="diagram-row">
+                    <div class="diagram-box storage">
+                        <strong>SQL Server</strong>
+                        <small>Insert em chunks (500 rows)</small>
+                    </div>
+                </div>
+
+                <div class="diagram-arrow-down">&#8595;</div>
+
+                <div class="diagram-row">
+                    <div class="diagram-box alert">
+                        <strong>fVendasRT</strong>
+                        <small>Producao</small>
+                    </div>
+                    <div class="diagram-box alert">
+                        <strong>fVendasWH</strong>
+                        <small>Teste</small>
+                    </div>
+                    <div class="diagram-box alert">
+                        <strong>stgHublaFatura</strong>
+                        <small>Hubla CF</small>
+                    </div>
+                    <div class="diagram-box alert">
+                        <strong>stgHublaFaturaLF</strong>
+                        <small>Hubla LF</small>
+                    </div>
+                </div>
+
+                <div class="diagram-arrow-down">&#8595;</div>
+
+                <div class="diagram-row">
+                    <div class="diagram-box output">
+                        <strong>Power BI Dashboards</strong>
+                        <small>Visualizacao para analistas</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Resposta HTTP:</strong> O servidor retorna <span class="highlight-text">202 Accepted</span> imediatamente apos receber o webhook.
+                O processamento ocorre em uma thread separada em background, garantindo que o webhook nunca expire por timeout.
+            </div>
+        </section>
+
+        <!-- ===================== API ENDPOINTS ===================== -->
+        <section class="section fade-in" id="api">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(0,206,201,0.15);">&#128268;</div>
+                API Endpoints
+            </div>
+            <p class="section-subtitle">Endpoints Flask definidos em main.py</p>
+
+            <div class="endpoint">
+                <span class="method method-post">POST</span>
+                <span class="endpoint-path">/guru</span>
+                <span class="endpoint-desc">Webhook Guru (Teste) &rarr; fVendasWH</span>
+            </div>
+            <div class="card" style="margin-left:72px; margin-top:-10px; margin-bottom:20px; padding:14px 20px;">
+                <p style="font-size:0.85em; color:var(--text-muted);">
+                    Recebe eventos de venda do Guru Digital Manager. Processa via <code>transformarDados()</code>
+                    em thread async. Insere na tabela de <strong>teste</strong> <code>fVendasWH</code>.
+                </p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method method-post">POST</span>
+                <span class="endpoint-path">/guruOld</span>
+                <span class="endpoint-desc">Webhook Guru (Producao) &rarr; fVendasRT</span>
+            </div>
+            <div class="card" style="margin-left:72px; margin-top:-10px; margin-bottom:20px; padding:14px 20px;">
+                <p style="font-size:0.85em; color:var(--text-muted);">
+                    Mesmo processamento que <code>/guru</code> porem escreve na tabela de <strong>producao</strong> <code>fVendasRT</code>.
+                </p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method method-post">POST</span>
+                <span class="endpoint-path">/hubla</span>
+                <span class="endpoint-desc">Webhook Hubla Class Fit &rarr; stgHublaFatura</span>
+            </div>
+            <div class="card" style="margin-left:72px; margin-top:-10px; margin-bottom:20px; padding:14px 20px;">
+                <p style="font-size:0.85em; color:var(--text-muted);">
+                    Recebe eventos Hubla (faturas, pagamentos). Processa via <code>transformarDadosHubla()</code>.
+                    Tipos de evento: <code>invoice.payment_succeeded</code>, <code>invoice.payment_failed</code>,
+                    <code>invoice.status_updated</code>.
+                </p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method method-post">POST</span>
+                <span class="endpoint-path">/hublalf</span>
+                <span class="endpoint-desc">Webhook Hubla Life in Fit &rarr; stgHublaFaturaLF</span>
+            </div>
+            <div class="card" style="margin-left:72px; margin-top:-10px; margin-bottom:20px; padding:14px 20px;">
+                <p style="font-size:0.85em; color:var(--text-muted);">
+                    Identico ao <code>/hubla</code> porem para a conta <strong>Life in Fit</strong> da Hubla.
+                </p>
+            </div>
+
+            <div class="endpoint">
+                <span class="method method-get">GET</span>
+                <span class="endpoint-path">/health</span>
+                <span class="endpoint-desc">Health Check do servidor</span>
+            </div>
+            <div class="card" style="margin-left:72px; margin-top:-10px; margin-bottom:20px; padding:14px 20px;">
+                <p style="font-size:0.85em; color:var(--text-muted);">
+                    Testa conexao com banco de dados e verifica existencia das tabelas
+                    <code>fVendasRT</code>, <code>fVendasTeste</code>, <code>fato_cf_vendasRT</code>.
+                    Retorna <span class="success-text">200 OK</span> ou <span class="highlight-text">500 Error</span>.
+                </p>
+            </div>
+        </section>
+
+        <!-- ===================== DATA FLOW ===================== -->
+        <section class="section fade-in" id="dataflow">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(162,155,254,0.15);">&#128260;</div>
+                Fluxo de Dados Completo
+            </div>
+            <p class="section-subtitle">Cenario end-to-end: da compra do cliente ao dashboard</p>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab(event, 'tab-hubla')">Compra via Hubla</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-guru')">Compra via Guru</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-batch')">Pipeline Batch</button>
+            </div>
+
+            <div id="tab-hubla" class="tab-content active">
+                <div class="flow-container">
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--info);">1</div>
+                        <div class="flow-content">
+                            <h3>Cliente finaliza compra no hub.la</h3>
+                            <p>O cliente completa o pagamento na plataforma Hubla para um produto Class Fit ou Life in Fit.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--teal);">2</div>
+                        <div class="flow-content">
+                            <h3>Hubla envia Webhook</h3>
+                            <p>POST <code>/hubla</code> ou <code>/hublalf</code> com payload JSON contendo dados da fatura, produto, usuario e assinatura.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--warning);">3</div>
+                        <div class="flow-content">
+                            <h3>Flask recebe e valida o JSON</h3>
+                            <p><code>request.get_json()</code> extrai o payload. Responde <strong>202 Accepted</strong> imediatamente.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--orange);">4</div>
+                        <div class="flow-content">
+                            <h3>Transformacao em Background</h3>
+                            <p><code>transformarDadosHubla()</code> converte JSON aninhado em colunas planas, adiciona timestamp de processamento.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--success);">5</div>
+                        <div class="flow-content">
+                            <h3>Insercao no SQL Server</h3>
+                            <p><code>inserirDados()</code> cria engine SQLAlchemy, insere em chunks de 500 rows na <code>stgHublaFatura</code> ou <code>stgHublaFaturaLF</code>.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--purple);">6</div>
+                        <div class="flow-content">
+                            <h3>Pipeline Batch Noturno</h3>
+                            <p>Jenkins roda auxiliar.py &rarr; dimensoes &rarr; vendas.py. Os dados da Hubla sao processados, embaixador e atribuido, e os dados vao para <code>fVendas</code>.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--highlight);">7</div>
+                        <div class="flow-content">
+                            <h3>Power BI Refresh</h3>
+                            <p><code>powerbi.py</code> dispara refresh dos datasets. Analistas visualizam a nova venda no dashboard.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-guru" class="tab-content">
+                <div class="flow-container">
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--info);">1</div>
+                        <div class="flow-content">
+                            <h3>Venda processada na Guru Digital Manager</h3>
+                            <p>O cliente compra um produto e a transacao e registrada na plataforma Guru.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--teal);">2</div>
+                        <div class="flow-content">
+                            <h3>Guru envia Webhook para /guruOld</h3>
+                            <p>POST com dados da transacao incluindo parametros UTM (source, medium, campaign, content).</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--warning);">3</div>
+                        <div class="flow-content">
+                            <h3>Transformacao via transformarDados()</h3>
+                            <p>Valida campos, normaliza UTMs (lowercase, trim), converte timezone UTC &rarr; Sao Paulo, consulta <code>dAuxiliar</code> para obter <code>idEmbaixador</code>.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--success);">4</div>
+                        <div class="flow-content">
+                            <h3>Insercao direta em fVendasRT</h3>
+                            <p>Dados ja transformados sao inseridos diretamente na tabela fato de tempo real. Disponivel imediatamente para Power BI.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-batch" class="tab-content">
+                <div class="flow-container">
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--info);">1</div>
+                        <div class="flow-content">
+                            <h3>Jenkins dispara pipeline agendado</h3>
+                            <p>Checkout do GitHub, criacao/atualizacao do ambiente Conda (<code>env87</code>).</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--teal);">2</div>
+                        <div class="flow-content">
+                            <h3>Extracao (Paralelo)</h3>
+                            <p>Scripts de <code>01.stages/</code> rodam em paralelo: Guru API (LF+CF), Excel imports, limpeza. Ate 5 retentativas por script.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--warning);">3</div>
+                        <div class="flow-content">
+                            <h3>Dimensoes (Sequencial + Paralelo)</h3>
+                            <p><strong>auxiliar.py</strong> roda primeiro (sequencial). Depois <strong>embaixador</strong>, <strong>produto</strong>, <strong>status</strong> em paralelo.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--success);">4</div>
+                        <div class="flow-content">
+                            <h3>Fatos (Paralelo)</h3>
+                            <p><strong>vendas</strong>, <strong>renovacoes</strong>, <strong>metas</strong>, <strong>metasCF</strong>, <strong>metasExpertsCF</strong> rodam em paralelo.</p>
+                        </div>
+                    </div>
+                    <div class="flow-stage">
+                        <div class="flow-number" style="background:var(--purple);">5</div>
+                        <div class="flow-content">
+                            <h3>Atualizacao e Finalizacao</h3>
+                            <p><code>powerbi.py</code> faz refresh dos datasets. Em caso de falha, <code>alertaFalha.py</code> notifica via Power Automate.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== DATABASE ===================== -->
+        <section class="section fade-in" id="database">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(0,184,148,0.15);">&#128451;</div>
+                Banco de Dados
+            </div>
+            <p class="section-subtitle">SQL Server - Modelo Dimensional com 2 servidores</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">
+                        Servidor Primario (V3_DW)
+                        <span class="card-label" style="background:rgba(116,185,255,0.15); color:var(--info);">Producao</span>
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted); margin-bottom:12px;">
+                        <code>srv-v3.database.windows.net</code><br>
+                        Database: <code>V3_DW</code>
+                    </p>
+                    <p style="font-size:0.85em; color:var(--text-muted);">
+                        Pool: 5 conexoes, max 10 overflow, timeout 30s
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        Servidor Secundario (Guru2)
+                        <span class="card-label" style="background:rgba(162,155,254,0.15); color:var(--purple);">Staging + DW</span>
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted); margin-bottom:12px;">
+                        <code>dw-life-in-fit.database.windows.net</code><br>
+                        Database: <code>dw_life_in_fit</code>
+                    </p>
+                    <p style="font-size:0.85em; color:var(--text-muted);">
+                        Tabelas de staging e dimensoes/fatos
+                    </p>
+                </div>
+            </div>
+
+            <h3 style="margin-top:30px; margin-bottom:16px; color:#fff;">Tabelas do Data Warehouse</h3>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Tabela</th><th>Tipo</th><th>Descricao</th><th>Origem</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>stgGuruTransactionsLF</code></td>
+                            <td><span class="tag tag-staging">Staging</span></td>
+                            <td>Transacoes Life in Fit (Guru API)</td>
+                            <td>transactionsLF.py</td>
+                        </tr>
+                        <tr>
+                            <td><code>stgGuruTransactionsCF</code></td>
+                            <td><span class="tag tag-staging">Staging</span></td>
+                            <td>Transacoes Class Fit (Guru API)</td>
+                            <td>transactionsCF.py</td>
+                        </tr>
+                        <tr>
+                            <td><code>stgHublaVendas</code></td>
+                            <td><span class="tag tag-staging">Staging</span></td>
+                            <td>Vendas Hubla Class Fit (Excel)</td>
+                            <td>vendasCF.py</td>
+                        </tr>
+                        <tr>
+                            <td><code>stgHublaVendasLF</code></td>
+                            <td><span class="tag tag-staging">Staging</span></td>
+                            <td>Vendas Hubla Life in Fit (Excel)</td>
+                            <td>vendasLF.py</td>
+                        </tr>
+                        <tr>
+                            <td><code>stgHublaFatura</code></td>
+                            <td><span class="tag tag-staging">Staging</span></td>
+                            <td>Faturas Hubla CF (Webhook)</td>
+                            <td>POST /hubla</td>
+                        </tr>
+                        <tr>
+                            <td><code>stgHublaFaturaLF</code></td>
+                            <td><span class="tag tag-staging">Staging</span></td>
+                            <td>Faturas Hubla LF (Webhook)</td>
+                            <td>POST /hublalf</td>
+                        </tr>
+                        <tr>
+                            <td><code>stgHublaAssinaturas</code></td>
+                            <td><span class="tag tag-staging">Staging</span></td>
+                            <td>Assinaturas Hubla (Excel)</td>
+                            <td>assinaturas.py</td>
+                        </tr>
+                        <tr style="background:rgba(253,203,110,0.03);">
+                            <td><code>dAuxiliar</code></td>
+                            <td><span class="tag tag-dimension">Dimensao</span></td>
+                            <td>Mapeamento UTM &rarr; Embaixador</td>
+                            <td>auxiliar.py</td>
+                        </tr>
+                        <tr style="background:rgba(253,203,110,0.03);">
+                            <td><code>dEmbaixador</code></td>
+                            <td><span class="tag tag-dimension">Dimensao</span></td>
+                            <td>Perfis dos Embaixadores/Vendedores</td>
+                            <td>embaixador.py</td>
+                        </tr>
+                        <tr style="background:rgba(253,203,110,0.03);">
+                            <td><code>dProduto</code></td>
+                            <td><span class="tag tag-dimension">Dimensao</span></td>
+                            <td>Catalogo de Produtos</td>
+                            <td>produto.py</td>
+                        </tr>
+                        <tr style="background:rgba(253,203,110,0.03);">
+                            <td><code>dStatus</code></td>
+                            <td><span class="tag tag-dimension">Dimensao</span></td>
+                            <td>Status Padronizados</td>
+                            <td>status.py</td>
+                        </tr>
+                        <tr style="background:rgba(0,184,148,0.03);">
+                            <td><code>fVendas</code></td>
+                            <td><span class="tag tag-fact">Fato</span></td>
+                            <td>Vendas (Ciclo 1)</td>
+                            <td>vendas.py</td>
+                        </tr>
+                        <tr style="background:rgba(0,184,148,0.03);">
+                            <td><code>fRenovacoes</code></td>
+                            <td><span class="tag tag-fact">Fato</span></td>
+                            <td>Renovacoes (Ciclo &gt;1)</td>
+                            <td>renovacoes.py</td>
+                        </tr>
+                        <tr style="background:rgba(0,184,148,0.03);">
+                            <td><code>fMetasGsheets</code></td>
+                            <td><span class="tag tag-fact">Fato</span></td>
+                            <td>Metas via Google Sheets</td>
+                            <td>metas.py</td>
+                        </tr>
+                        <tr style="background:rgba(0,184,148,0.03);">
+                            <td><code>fMetasCF</code></td>
+                            <td><span class="tag tag-fact">Fato</span></td>
+                            <td>Metas Class Fit</td>
+                            <td>metasCF.py</td>
+                        </tr>
+                        <tr style="background:rgba(0,184,148,0.03);">
+                            <td><code>fMetasExpertsCF</code></td>
+                            <td><span class="tag tag-fact">Fato</span></td>
+                            <td>Metas Experts CF</td>
+                            <td>metasExpertsCF.py</td>
+                        </tr>
+                        <tr style="background:rgba(233,69,96,0.03);">
+                            <td><code>fVendasRT</code></td>
+                            <td><span class="tag tag-realtime">Real-Time</span></td>
+                            <td>Vendas em tempo real (Producao)</td>
+                            <td>POST /guruOld</td>
+                        </tr>
+                        <tr style="background:rgba(233,69,96,0.03);">
+                            <td><code>fVendasWH</code></td>
+                            <td><span class="tag tag-realtime">Real-Time</span></td>
+                            <td>Vendas em tempo real (Teste)</td>
+                            <td>POST /guru</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===================== BUSINESS RULES ===================== -->
+        <section class="section fade-in" id="business">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(253,203,110,0.15);">&#9878;</div>
+                Regras de Negocio
+            </div>
+            <p class="section-subtitle">Logica de atribuicao de embaixadores, classificacao de vendas e padronizacao de status</p>
+
+            <div class="grid-2">
+                <!-- Ambassador Attribution -->
+                <div class="card">
+                    <div class="card-title">
+                        Atribuicao de Embaixadores
+                        <span class="card-label" style="background:rgba(233,69,96,0.15); color:var(--highlight);">11 Regras</span>
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted); margin-bottom:14px;">
+                        Cada fonte de dados tem 11 regras aplicadas em sequencia para identificar
+                        qual embaixador/vendedor deve receber credito pela venda.
+                    </p>
+                    <ul class="rule-list">
+                        <li><span class="rule-number">R1</span> Se source comecar com "whatsapp", extrair nome apos hifen</li>
+                        <li><span class="rule-number">R2</span> Se utm_medium contem "paid", atribuir a <strong>"Trafego"</strong></li>
+                        <li><span class="rule-number">R3</span> Se utm_source contem keywords de trafego (facebook, google, tiktok...), atribuir a <strong>"Trafego"</strong></li>
+                        <li><span class="rule-number">R4-R10</span> Regras especificas por fonte (Guru LF, Guru CF, Hubla...)</li>
+                        <li><span class="rule-number">R11</span> Se ainda NULL, atribuir a <strong>"Organico"</strong></li>
+                    </ul>
+                    <div class="info-box warning" style="margin-top:12px;">
+                        <strong>Valores Especiais:</strong><br>
+                        &#8226; <code>Organico</code> = Trafego nao atribuido<br>
+                        &#8226; <code>Trafego</code> = Anuncios pagos<br>
+                        &#8226; <code>NULL</code> = Sem atribuicao
+                    </div>
+                </div>
+
+                <!-- Sales Classification -->
+                <div class="card">
+                    <div class="card-title">
+                        Classificacao Vendas vs Renovacoes
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted); margin-bottom:14px;">
+                        Toda transacao e classificada como Venda ou Renovacao baseada em regras de ciclo e UTM.
+                    </p>
+
+                    <div style="background:rgba(0,184,148,0.05); border:1px solid rgba(0,184,148,0.15); border-radius:8px; padding:14px; margin-bottom:12px;">
+                        <h4 style="color:var(--success); margin-bottom:8px;">Vendas (fVendas)</h4>
+                        <p style="font-size:0.85em; color:var(--text-muted);">
+                            &#8226; Ciclo = 1<br>
+                            &#8226; Status: Aprovado ou Reembolsado<br>
+                            &#8226; utm_medium NAO e "Renovacao" nem "upsell"
+                        </p>
+                    </div>
+
+                    <div style="background:rgba(116,185,255,0.05); border:1px solid rgba(116,185,255,0.15); border-radius:8px; padding:14px; margin-bottom:12px;">
+                        <h4 style="color:var(--info); margin-bottom:8px;">Renovacoes (fRenovacoes)</h4>
+                        <p style="font-size:0.85em; color:var(--text-muted);">
+                            &#8226; Ciclo &gt; 1<br>
+                            &#8226; OU utm_medium IN ('Renovacao', 'upsell')<br>
+                            &#8226; Tipos: Ativa, Automatica, Upsell
+                        </p>
+                    </div>
+
+                    <div style="background:rgba(253,203,110,0.05); border:1px solid rgba(253,203,110,0.15); border-radius:8px; padding:14px;">
+                        <h4 style="color:var(--warning); margin-bottom:8px;">Regra Especial</h4>
+                        <p style="font-size:0.85em; color:var(--text-muted);">
+                            Quando <code>idRenovacao = 1</code> (primeira renovacao), o <code>idEmbaixador</code>
+                            e definido como <code>NULL</code> (credito nao atribuido).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Standardization -->
+            <div class="card" style="margin-top:20px;">
+                <div class="card-title">Padronizacao de Status</div>
+                <p style="font-size:0.85em; color:var(--text-muted); margin-bottom:14px;">
+                    Status das diferentes fontes sao mapeados para valores padronizados na dimensao <code>dStatus</code>.
+                </p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Fonte Original</th><th>Valor Original</th><th>Valor Padronizado</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Guru</td><td><code>approved</code></td><td><span class="success-text">Aprovado</span></td></tr>
+                            <tr><td>Hubla</td><td><code>Paga</code></td><td><span class="success-text">Aprovado</span></td></tr>
+                            <tr><td>Guru</td><td><code>refunded</code></td><td><span class="highlight-text">Reembolsado</span></td></tr>
+                            <tr><td>Hubla</td><td><code>Reembolsada</code></td><td><span class="highlight-text">Reembolsado</span></td></tr>
+                            <tr><td>Hubla</td><td><code>Em aberto</code></td><td><span class="warning-text">Aguardando Pagamento</span></td></tr>
+                            <tr><td>Hubla</td><td><code>Nao paga</code></td><td><span class="info-text">Expirado</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== INTEGRATIONS ===================== -->
+        <section class="section fade-in" id="integrations">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(0,206,201,0.15);">&#128279;</div>
+                Integracoes Externas
+            </div>
+            <p class="section-subtitle">Plataformas e servicos conectados ao pipeline</p>
+
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-title">
+                        <span style="font-size:1.2em;">&#128200;</span> Guru Digital Manager
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted);">
+                        <strong>Tipo:</strong> API REST + Webhook<br>
+                        <strong>Autenticacao:</strong> Bearer Token<br>
+                        <strong>Dados:</strong> Transacoes com UTM tracking<br>
+                        <strong>Tokens:</strong> GURU_TOKEN_LF, GURU_TOKEN_CF<br>
+                        <strong>Biblioteca:</strong> v3guru.endpoints
+                    </p>
+                    <div style="margin-top:10px;">
+                        <span class="tag tag-batch">Batch</span>
+                        <span class="tag tag-realtime">Real-Time</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span style="font-size:1.2em;">&#128176;</span> Hubla
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted);">
+                        <strong>Tipo:</strong> Webhook + Excel export<br>
+                        <strong>Eventos:</strong> Faturas, pagamentos<br>
+                        <strong>Dados:</strong> Invoice, product, user, subscription<br>
+                        <strong>Endpoints:</strong> /hubla, /hublalf<br>
+                        <strong>Formato:</strong> JSON aninhado
+                    </p>
+                    <div style="margin-top:10px;">
+                        <span class="tag tag-batch">Excel Import</span>
+                        <span class="tag tag-realtime">Webhook</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span style="font-size:1.2em;">&#128202;</span> Power BI
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted);">
+                        <strong>Tipo:</strong> API REST<br>
+                        <strong>Acao:</strong> Refresh de datasets<br>
+                        <strong>Group ID:</strong> POWERBI_GROUP_ID<br>
+                        <strong>Biblioteca:</strong> v3powerautomate<br>
+                        <strong>Frequencia:</strong> Apos cada pipeline batch
+                    </p>
+                    <div style="margin-top:10px;">
+                        <span class="tag tag-batch">Batch Refresh</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span style="font-size:1.2em;">&#9889;</span> Power Automate
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted);">
+                        <strong>Tipo:</strong> Webhook<br>
+                        <strong>Acao:</strong> Envio de alertas de falha<br>
+                        <strong>Trigger:</strong> Quando pipeline falha<br>
+                        <strong>Dados:</strong> Erro, pipeline, build URL<br>
+                        <strong>Biblioteca:</strong> v3powerautomate.sendAlert
+                    </p>
+                    <div style="margin-top:10px;">
+                        <span class="tag tag-critical">Alertas</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span style="font-size:1.2em;">&#128196;</span> Google Sheets
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted);">
+                        <strong>Tipo:</strong> CSV Export<br>
+                        <strong>Dados:</strong> Metas mensais, funcionarios, experts<br>
+                        <strong>Processamento:</strong> Conversao monetaria (R$), diluicao diaria<br>
+                        <strong>Scripts:</strong> metas.py, metasCF.py, metasExpertsCF.py
+                    </p>
+                    <div style="margin-top:10px;">
+                        <span class="tag tag-batch">Batch Import</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span style="font-size:1.2em;">&#128295;</span> Bibliotecas Internas
+                    </div>
+                    <p style="font-size:0.85em; color:var(--text-muted);">
+                        <strong>v3database:</strong> Conexoes DB e utilitarios<br>
+                        <strong>v3guru:</strong> Endpoints da API Guru<br>
+                        <strong>v3powerautomate:</strong> Power BI + Alertas<br>
+                        <strong>Instalacao:</strong> Via Conda (environment.yml)
+                    </p>
+                    <div style="margin-top:10px;">
+                        <span class="tag" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">Custom</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk matrix -->
+            <h3 style="margin-top:30px; margin-bottom:16px; color:#fff;">Matriz de Dependencias e Riscos</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Componente</th><th>Tipo</th><th>Risco</th><th>Impacto se Indisponivel</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SQL Server</td>
+                            <td>Externo</td>
+                            <td><span class="tag tag-critical">Critico</span></td>
+                            <td>Nenhum dado processado ou armazenado</td>
+                        </tr>
+                        <tr>
+                            <td>Guru API</td>
+                            <td>Externo</td>
+                            <td><span class="tag tag-high">Alto</span></td>
+                            <td>Vendas em tempo real nao capturadas</td>
+                        </tr>
+                        <tr>
+                            <td>Hubla Webhooks</td>
+                            <td>Externo</td>
+                            <td><span class="tag tag-high">Alto</span></td>
+                            <td>Pagamentos nao registrados</td>
+                        </tr>
+                        <tr>
+                            <td>Jenkins</td>
+                            <td>Interno</td>
+                            <td><span class="tag tag-high">Alto</span></td>
+                            <td>Pipeline batch nao executa</td>
+                        </tr>
+                        <tr>
+                            <td>Power BI</td>
+                            <td>Externo</td>
+                            <td><span class="tag tag-medium">Medio</span></td>
+                            <td>Dashboards nao atualizados</td>
+                        </tr>
+                        <tr>
+                            <td>ODBC Driver 18</td>
+                            <td>Sistema</td>
+                            <td><span class="tag tag-high">Alto</span></td>
+                            <td>Conexao com SQL Server impossivel</td>
+                        </tr>
+                        <tr>
+                            <td>Google Sheets</td>
+                            <td>Externo</td>
+                            <td><span class="tag tag-low">Baixo</span></td>
+                            <td>Metas nao atualizadas (planejamento)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===================== DEPLOY ===================== -->
+        <section class="section fade-in" id="deploy">
+            <div class="section-title">
+                <div class="icon" style="background:rgba(162,155,254,0.15);">&#128640;</div>
+                Deploy e Infraestrutura
+            </div>
+            <p class="section-subtitle">Metodos de deploy e configuracao de ambiente</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">
+                        Jenkins Pipeline (Batch ETL)
+                        <span class="card-label" style="background:rgba(225,112,85,0.15); color:var(--orange);">Agendado</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li><span class="rule-number">1</span> Checkout do GitHub</li>
+                        <li><span class="rule-number">2</span> Setup ambiente Conda (<code>env87</code>)</li>
+                        <li><span class="rule-number">3</span> Execucao scripts Python (4 estagios)</li>
+                        <li><span class="rule-number">4</span> Retry: 5 tentativas, 5s entre cada</li>
+                        <li><span class="rule-number">5</span> Paralelismo: ate 5 scripts simultaneos</li>
+                        <li><span class="rule-number">6</span> Alerta via Power Automate se falha</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        Docker / Heroku (Flask API)
+                        <span class="card-label" style="background:rgba(116,185,255,0.15); color:var(--info);">Cloud</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li><span class="rule-number">1</span> Base: Python 3.11-bookworm</li>
+                        <li><span class="rule-number">2</span> ODBC Driver 18 + unixodbc</li>
+                        <li><span class="rule-number">3</span> Gunicorn: 4 workers, timeout 120s</li>
+                        <li><span class="rule-number">4</span> Porta: 5000</li>
+                        <li><span class="rule-number">5</span> Variaveis: .env passadas ao container</li>
+                        <li><span class="rule-number">6</span> Health check: GET /health</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:20px;">
+                <div class="card-title">Desenvolvimento Local</div>
+                <div class="code-block"><span class="code-comment"># Setup inicial</span>
+<span class="code-func">conda</span> env create -f environment.yml
+<span class="code-func">conda</span> activate env87
+
+<span class="code-comment"># Rodar Flask API localmente</span>
+<span class="code-func">python</span> main.py  <span class="code-comment"># Roda em localhost:5000</span>
+
+<span class="code-comment"># Rodar script ETL individual</span>
+<span class="code-func">python</span> Pipeline/02.dimensoes/auxiliar.py
+
+<span class="code-comment"># Rodar pipeline completo</span>
+<span class="code-comment"># Via Jenkins (agendado) ou manualmente script por script</span></div>
+            </div>
+
+            <div class="card" style="margin-top:20px;">
+                <div class="card-title">Logging e Monitoramento</div>
+                <p style="font-size:0.85em; color:var(--text-muted); margin-bottom:12px;">
+                    Sistema centralizado de logging com saida para console e arquivo rotativo.
+                </p>
+                <div class="grid-2" style="gap:12px;">
+                    <div style="background:rgba(0,0,0,0.2); border-radius:8px; padding:14px;">
+                        <h4 style="color:var(--info); margin-bottom:8px; font-size:0.9em;">Formato do Log</h4>
+                        <code style="font-size:0.78em; color:var(--text-muted);">YYYY-MM-DD HH:MM:SS | name | LEVEL | process | thread | message</code>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.2); border-radius:8px; padding:14px;">
+                        <h4 style="color:var(--info); margin-bottom:8px; font-size:0.9em;">Configuracao</h4>
+                        <p style="font-size:0.82em; color:var(--text-muted);">
+                            Arquivo: <code>app.log</code> (max 10MB, 5 backups)<br>
+                            Level custom: SUCCESS (25)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>87LifeInFit - Pipeline ETL &bull; Data Warehouse &bull; Documentacao de Fluxo</p>
+        <p style="margin-top:8px;">Gerado automaticamente &bull; Python 3.13 &bull; Flask &bull; SQL Server &bull; Jenkins &bull; Power BI</p>
+    </div>
+
+    <!-- Scroll to top -->
+    <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+    <script>
+        // Scroll to top button
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTop');
+            btn.classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // Tab switching
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Fade-in on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Active nav
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100) current = section.id;
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Collapsible elements
+        document.querySelectorAll('.collapsible').forEach(el => {
+            el.addEventListener('click', () => {
+                el.classList.toggle('active');
+                const content = el.nextElementSibling;
+                content.classList.toggle('show');
+            });
+        });
+    </script>
+
+</body>
+</html>
